@@ -2,6 +2,7 @@
 
 import { Calendar, MapPin, DollarSign, Building2, Clock, Users, FileText, Eye } from 'lucide-react'
 import { formatCurrency, formatDate, calculateDaysRemaining } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 interface Tender {
   id: string
@@ -34,6 +35,12 @@ interface TenderListProps {
 }
 
 export function TenderList({ tenders }: TenderListProps) {
+  const router = useRouter()
+
+  const handleTenderClick = (tenderId: string) => {
+    router.push(`/tenders/${tenderId}`)
+  }
+
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'CONSTRUCTION':
@@ -85,12 +92,16 @@ export function TenderList({ tenders }: TenderListProps) {
           const daysRemaining = calculateDaysRemaining(tender.lastDateSubmission)
 
           return (
-            <div key={tender.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-200">
+            <div
+              key={tender.id}
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+              onClick={() => handleTenderClick(tender.id)}
+            >
               {/* Header */}
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
                   <div className="flex items-center space-x-3 mb-2">
-                    <h3 className="text-lg font-semibold text-gray-900">{tender.title}</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 transition-colors">{tender.title}</h3>
                     <span className={`text-xs px-2 py-1 rounded-full font-medium ${getCategoryColor(tender.category)}`}>
                       {tender.category.replace('_', ' ')}
                     </span>

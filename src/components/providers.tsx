@@ -3,6 +3,7 @@
 import { SessionProvider } from 'next-auth/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { MuiThemeProvider } from '@/components/providers/mui-theme-provider'
 import { useState } from 'react'
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -21,7 +22,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <MuiThemeProvider>
+          {children}
+        </MuiThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </SessionProvider>

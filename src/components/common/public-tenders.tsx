@@ -2,6 +2,7 @@
 
 import { Calendar, MapPin, DollarSign, Building2, Clock } from 'lucide-react'
 import { formatCurrency, formatDate, calculateDaysRemaining } from '@/lib/utils'
+import { useRouter } from 'next/navigation'
 
 interface PublicTender {
   id: string
@@ -20,6 +21,12 @@ interface PublicTendersProps {
 }
 
 export function PublicTenders({ tenders }: PublicTendersProps) {
+  const router = useRouter()
+
+  const handleTenderClick = (tenderId: string) => {
+    router.push(`/tenders/${tenderId}`)
+  }
+
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'CONSTRUCTION':
@@ -48,11 +55,15 @@ export function PublicTenders({ tenders }: PublicTendersProps) {
           const daysRemaining = calculateDaysRemaining(tender.lastDateSubmission)
 
           return (
-            <div key={tender.id} className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-200">
+            <div
+              key={tender.id}
+              className="bg-white border border-gray-200 rounded-lg p-6 hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+              onClick={() => handleTenderClick(tender.id)}
+            >
               {/* Header */}
               <div className="flex justify-between items-start mb-4">
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 hover:text-blue-600 transition-colors">
                     {tender.title}
                   </h3>
                   <div className="flex items-center text-sm text-gray-600 mb-2">

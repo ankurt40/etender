@@ -1,18 +1,13 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/config'
-import { redirect } from 'next/navigation'
 import { PublicHeader } from '@/components/common/public-header'
+import { DashboardHeader } from '@/components/common/dashboard-header'
 import { PublicTenders } from '@/components/common/public-tenders'
 import { NewsSection } from '@/components/common/news-section'
 import { StatsSection } from '@/components/common/stats-section'
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions)
-
-  // If user is already logged in, redirect to dashboard
-  if (session) {
-    redirect('/dashboard')
-  }
 
   // Mock data for public display
   const publicTenders = [
@@ -98,32 +93,54 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <PublicHeader />
+      {/* Use DashboardHeader if logged in, otherwise PublicHeader */}
+      {session ? <DashboardHeader user={session.user} /> : <PublicHeader />}
 
-      {/* Hero Section */}
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              Government Tender Portal
-              <span className="block text-blue-200">Powered by AI</span>
-            </h1>
-            <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
-              Discover the latest government tenders, streamline your bidding process,
-              and win more contracts with AI-powered insights.
-            </p>
+      {/* Hero Section - Show different content based on login status */}
+      {!session ? (
+        <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-4xl md:text-6xl font-bold mb-6">
+                Government Tender Portal
+                <span className="block text-blue-200">Powered by AI</span>
+              </h1>
+              <p className="text-xl text-blue-100 mb-8 max-w-3xl mx-auto">
+                Discover the latest government tenders, streamline your bidding process,
+                and win more contracts with AI-powered insights.
+              </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/auth/signup" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-                Start Bidding Today
-              </a>
-              <a href="#recent-tenders" className="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
-                Browse Tenders
-              </a>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/auth/signup" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                  Start Bidding Today
+                </a>
+                <a href="#recent-tenders" className="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                  Browse Tenders
+                </a>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : (
+        <section className="bg-blue-600 text-white py-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center">
+              <h1 className="text-3xl font-bold mb-4">Welcome back, {session.user?.name || 'User'}!</h1>
+              <p className="text-blue-100 mb-6">
+                Explore the latest tender opportunities and manage your applications
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="/tenders" className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                  Browse Tenders
+                </a>
+                <a href="/dashboard" className="border border-white text-white px-6 py-2 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                  Go to Dashboard
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Platform Stats */}
       <StatsSection stats={platformStats} />
@@ -154,75 +171,79 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 bg-blue-600">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Winning Tenders?</h2>
-          <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of contractors who trust TenderGenix for their government contracting needs
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/auth/signup" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
-              Create Free Account
-            </a>
-            <a href="/auth/signin" className="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
-              Sign In
-            </a>
-          </div>
+      {/* CTA Section - Only show for non-logged in users */}
+      {!session && (
+        <section className="py-16 bg-blue-600">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Ready to Start Winning Tenders?</h2>
+            <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
+              Join thousands of contractors who trust TenderGenix for their government contracting needs
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="/auth/signup" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                Create Free Account
+              </a>
+              <a href="/auth/signin" className="border border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                Sign In
+              </a>
+            </div>
 
-          {/* Demo Credentials */}
-          <div className="mt-8 bg-blue-700 border border-blue-500 rounded-lg p-6 max-w-md mx-auto">
-            <h3 className="font-semibold text-white mb-2">Try Demo Account</h3>
-            <div className="text-sm font-mono bg-white text-gray-900 p-3 rounded border">
-              <div>Email: demo@tendergenix.com</div>
-              <div>Password: demo123</div>
+            {/* Demo Credentials */}
+            <div className="mt-8 bg-blue-700 border border-blue-500 rounded-lg p-6 max-w-md mx-auto">
+              <h3 className="font-semibold text-white mb-2">Try Demo Account</h3>
+              <div className="text-sm font-mono bg-white text-gray-900 p-3 rounded border">
+                <div>Email: demo@tendergenix.com</div>
+                <div>Password: demo123</div>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <h3 className="text-2xl font-bold text-blue-400 mb-4">TenderGenix</h3>
-              <p className="text-gray-300 mb-4">
-                AI-powered platform for government contractors to discover, bid, and manage tenders efficiently.
-              </p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a>
-                <a href="#" className="text-gray-400 hover:text-white">Terms of Service</a>
-                <a href="#" className="text-gray-400 hover:text-white">Contact Us</a>
+      {/* Footer - Only show for non-logged in users */}
+      {!session && (
+        <footer className="bg-gray-900 text-white py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="col-span-1 md:col-span-2">
+                <h3 className="text-2xl font-bold text-blue-400 mb-4">TenderGenix</h3>
+                <p className="text-gray-300 mb-4">
+                  AI-powered platform for government contractors to discover, bid, and manage tenders efficiently.
+                </p>
+                <div className="flex space-x-4">
+                  <a href="#" className="text-gray-400 hover:text-white">Privacy Policy</a>
+                  <a href="#" className="text-gray-400 hover:text-white">Terms of Service</a>
+                  <a href="#" className="text-gray-400 hover:text-white">Contact Us</a>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+                <ul className="space-y-2">
+                  <li><a href="#recent-tenders" className="text-gray-400 hover:text-white">Recent Tenders</a></li>
+                  <li><a href="/auth/signup" className="text-gray-400 hover:text-white">Sign Up</a></li>
+                  <li><a href="/auth/signin" className="text-gray-400 hover:text-white">Sign In</a></li>
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Support</h4>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">API</a></li>
+                </ul>
               </div>
             </div>
 
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2">
-                <li><a href="#recent-tenders" className="text-gray-400 hover:text-white">Recent Tenders</a></li>
-                <li><a href="/auth/signup" className="text-gray-400 hover:text-white">Sign Up</a></li>
-                <li><a href="/auth/signin" className="text-gray-400 hover:text-white">Sign In</a></li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Support</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">Documentation</a></li>
-                <li><a href="#" className="text-gray-400 hover:text-white">API</a></li>
-              </ul>
+            <div className="border-t border-gray-800 mt-8 pt-8 text-center">
+              <p className="text-gray-400">
+                © 2025 TenderGenix. All rights reserved. | Made for Indian Government Contractors
+              </p>
             </div>
           </div>
-
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-            <p className="text-gray-400">
-              © 2025 TenderGenix. All rights reserved. | Made for Indian Government Contractors
-            </p>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      )}
     </div>
   )
 }
