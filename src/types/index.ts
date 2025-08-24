@@ -9,23 +9,23 @@ export interface AuthUser extends User {
 }
 
 export interface TenderWithDetails extends Tender {
-  applications?: any[]
-  analytics?: any[]
+  applications?: Array<Record<string, unknown>>
+  analytics?: Array<Record<string, unknown>>
 }
 
 export interface ProposalWithDetails extends Proposal {
   tender: Tender
   contractor: Contractor
-  documents?: any[]
+  documents?: Array<Record<string, unknown>>
 }
 
 export interface ContractWithDetails extends Contract {
   contractor: Contractor
-  deliverableTracking?: any[]
-  invoices?: any[]
+  deliverableTracking?: Array<Record<string, unknown>>
+  invoices?: Array<Record<string, unknown>>
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = Record<string, unknown>> {
   success: boolean
   data?: T
   message?: string
@@ -113,9 +113,9 @@ export interface TenderForm {
   openingDate: string
   validityPeriod: number
   workCompletionTime: number
-  eligibilityCriteria: any
-  technicalSpecs: any
-  evaluationCriteria: any
+  eligibilityCriteria: Record<string, unknown>
+  technicalSpecs: Record<string, unknown>
+  evaluationCriteria: Record<string, unknown>
   contactPerson: string
   contactEmail: string
   contactPhone: string
@@ -124,8 +124,8 @@ export interface TenderForm {
 export interface ProposalForm {
   tenderId: string
   title: string
-  technicalProposal: any
-  financialProposal: any
+  technicalProposal: Record<string, unknown>
+  financialProposal: Record<string, unknown>
   totalAmount: number
   language: 'ENGLISH' | 'HINDI'
 }
@@ -140,7 +140,7 @@ export interface AuthStore {
 }
 
 export interface NotificationStore {
-  notifications: any[]
+  notifications: Array<Record<string, unknown>>
   unreadCount: number
   fetchNotifications: () => Promise<void>
   markAsRead: (id: string) => Promise<void>

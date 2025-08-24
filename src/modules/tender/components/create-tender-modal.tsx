@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import { X, Calendar, DollarSign, MapPin, Clock, Building2, FileText } from 'lucide-react'
-import { formatCurrency } from '@/lib/utils'
 
 interface CreateTenderModalProps {
   isOpen: boolean
@@ -117,7 +116,7 @@ export function CreateTenderModal({ isOpen, onClose }: CreateTenderModalProps) {
         const errorData = await response.json()
         alert(`Error creating tender: ${errorData.error}`)
       }
-    } catch (error) {
+    } catch (_error) {
       alert('Error creating tender. Please try again.')
     } finally {
       setIsSubmitting(false)

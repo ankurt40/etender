@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { DashboardHeader } from '@/components/common/dashboard-header'
-import { Calendar, MapPin, FileText, Download, Eye, ArrowLeft, Clock, Building, CreditCard, Shield } from 'lucide-react'
+import { Calendar, MapPin, FileText, Download, Eye, ArrowLeft, Building, CreditCard } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 
 interface TenderDetailsProps {

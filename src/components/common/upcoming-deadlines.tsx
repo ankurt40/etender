@@ -17,7 +17,7 @@ export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
       <div className="p-6 border-b border-gray-200">
         <h3 className="text-lg font-semibold text-gray-900">Upcoming Deadlines</h3>
-        <p className="text-sm text-gray-600 mt-1">Don't miss these important dates</p>
+        <p className="text-sm text-gray-600 mt-1">Don&apos;t miss these important dates</p>
       </div>
 
       <div className="p-6">
@@ -25,7 +25,7 @@ export function UpcomingDeadlines({ deadlines }: UpcomingDeadlinesProps) {
           <div className="text-center py-8">
             <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <p className="text-gray-500">No upcoming deadlines</p>
-            <p className="text-sm text-gray-400 mt-1">You're all caught up!</p>
+            <p className="text-sm text-gray-400 mt-1">You&apos;re all caught up!</p>
           </div>
         ) : (
           <div className="space-y-3">

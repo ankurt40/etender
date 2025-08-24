@@ -83,7 +83,7 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.sub!
         session.user.role = token.role as string
         session.user.isVerified = token.isVerified as boolean
-        session.user.contractor = token.contractor as any
+        session.user.contractor = token.contractor as { id: string; companyName?: string } | null
       }
       return session
     }

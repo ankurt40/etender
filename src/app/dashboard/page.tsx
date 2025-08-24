@@ -79,7 +79,7 @@ export default async function DashboardPage() {
             Welcome back, {session.user.name}
           </h1>
           <p className="text-gray-600 mt-2">
-            Here's what's happening with your tenders and contracts today.
+            Here&apos;s what&apos;s happening with your tenders and contracts today.
           </p>
         </div>
 

@@ -29,7 +29,7 @@ interface Tender {
   contactEmail: string
   contactPhone: string
   status: string
-  applications: any[]
+  applications: Array<Record<string, unknown>>
   _count: { applications: number }
 }
 
@@ -159,7 +159,7 @@ export function TenderDataGrid({ tenders }: TenderDataGridProps) {
         <div className="flex items-center justify-center h-full">
           <Chip
             label={params.value.replace('_', ' ')}
-            color={getCategoryColor(params.value) as any}
+            color={getCategoryColor(params.value) as 'warning' | 'primary' | 'success' | 'secondary' | 'info' | 'default'}
             size="small"
             variant="outlined"
           />
@@ -218,7 +218,7 @@ export function TenderDataGrid({ tenders }: TenderDataGridProps) {
             </div>
             <Chip
               label={daysRemaining > 0 ? `${daysRemaining} days left` : 'Expired'}
-              color={getUrgencyColor(daysRemaining) as any}
+              color={getUrgencyColor(daysRemaining) as 'error' | 'warning' | 'success'}
               size="small"
               variant="filled"
               sx={{ fontSize: '0.7rem', height: 20, mt: 0.5 }}

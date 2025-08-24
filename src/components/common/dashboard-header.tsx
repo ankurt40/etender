@@ -3,9 +3,15 @@
 import { useState, useRef, useEffect } from 'react'
 import { Bell, User, LogOut, Settings, ChevronDown, UserCog } from 'lucide-react'
 import { signOut } from 'next-auth/react'
+import Link from 'next/link'
 
 interface DashboardHeaderProps {
-  user: any
+  user: {
+    name?: string | null
+    email?: string | null
+    image?: string | null
+    role?: string
+  }
 }
 
 export function DashboardHeader({ user }: DashboardHeaderProps) {
@@ -31,40 +37,38 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-sm border-b">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo - Left Side */}
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <a href="/" className="block">
-                <h1 className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer">
-                  TenderGenix
-                </h1>
-              </a>
-            </div>
+      <div className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center h-16">
+          {/* Logo - Far Left */}
+          <div className="flex items-center flex-shrink-0 mr-8">
+            <Link href="/" className="block">
+              <h1 className="text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer">
+                TenderGenix
+              </h1>
+            </Link>
           </div>
 
-          {/* Navigation - Center */}
-          <nav className="hidden md:flex space-x-8">
-            <a href="/dashboard" className="text-gray-900 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+          {/* Navigation - Expanded Center */}
+          <nav className="hidden md:flex flex-1 justify-center space-x-12">
+            <Link href="/dashboard" className="text-gray-900 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors">
               Dashboard
-            </a>
-            <a href="/tenders" className="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+            </Link>
+            <Link href="/tenders" className="text-gray-500 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors">
               Tenders
-            </a>
-            <a href="/proposals" className="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+            </Link>
+            <Link href="/proposals" className="text-gray-500 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors">
               Proposals
-            </a>
-            <a href="/contracts" className="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+            </Link>
+            <Link href="/contracts" className="text-gray-500 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors">
               Contracts
-            </a>
-            <a href="/analytics" className="text-gray-500 hover:text-blue-600 px-3 py-2 text-sm font-medium">
+            </Link>
+            <Link href="/analytics" className="text-gray-500 hover:text-blue-600 px-4 py-2 text-sm font-medium transition-colors">
               Analytics
-            </a>
+            </Link>
           </nav>
 
-          {/* Profile Section - Right Side */}
-          <div className="flex items-center space-x-4">
+          {/* Profile Section - Far Right */}
+          <div className="flex items-center space-x-4 flex-shrink-0">
             {/* Notifications */}
             <button className="relative p-2 text-gray-500 hover:text-gray-700">
               <Bell className="h-5 w-5" />
@@ -83,7 +87,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
                   </div>
                   <div className="flex flex-col items-start">
                     <span className="text-sm font-medium text-gray-900">{user.name}</span>
-                    <span className="text-xs text-gray-500 capitalize">{user.role.toLowerCase()}</span>
+                    <span className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</span>
                   </div>
                 </div>
                 <ChevronDown className={`h-4 w-4 text-gray-500 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -102,7 +106,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
                         <div>
                           <p className="text-sm font-medium text-gray-900">{user.name}</p>
                           <p className="text-xs text-gray-500">{user.email}</p>
-                          <p className="text-xs text-blue-600 capitalize">{user.role.toLowerCase()} Account</p>
+                          <p className="text-xs text-blue-600 capitalize">{user.role?.toLowerCase()} Account</p>
                         </div>
                       </div>
                     </div>

@@ -5,6 +5,7 @@ import { DashboardHeader } from '@/components/common/dashboard-header'
 import { PublicTenders } from '@/components/common/public-tenders'
 import { NewsSection } from '@/components/common/news-section'
 import { StatsSection } from '@/components/common/stats-section'
+import Link from 'next/link'
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions)
@@ -130,12 +131,12 @@ export default async function HomePage() {
                 Explore the latest tender opportunities and manage your applications
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="/tenders" className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
+                <Link href="/tenders" className="bg-white text-blue-600 px-6 py-2 rounded-lg font-semibold hover:bg-blue-50 transition-colors">
                   Browse Tenders
-                </a>
-                <a href="/dashboard" className="border border-white text-white px-6 py-2 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+                </Link>
+                <Link href="/dashboard" className="border border-white text-white px-6 py-2 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
                   Go to Dashboard
-                </a>
+                </Link>
               </div>
             </div>
           </div>

@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
 
-    const where: any = {}
+    const where: Record<string, unknown> = {}
 
     if (category) where.category = category
     if (state) where.state = state
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     if (minValue) where.estimatedValue = { gte: parseFloat(minValue) }
     if (maxValue) {
       where.estimatedValue = {
-        ...where.estimatedValue,
+        ...(where.estimatedValue as Record<string, unknown> || {}),
         lte: parseFloat(maxValue)
       }
     }
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
         where,
         include: {
           applications: {
-            where: { contractorId: session.user.contractor?.id },
+            where: { contractorId: session.user?.contractor?.id },
             select: { id: true, status: true }
           },
           _count: {
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, error: 'Validation error', details: error.errors },
+        { success: false, error: 'Validation error', details: error.issues },
         { status: 400 }
       )
     }
@@ -185,7 +185,7 @@ async function createTenderNotifications(tenderId: string) {
       tenderId: tender.id,
       type: 'TENDER_MATCH' as const,
       title: 'New Tender Match',
-      message: `New tender "${tender.title}" matches your profile. Estimated value: ₹${tender.estimatedValue.toLocaleString()}`
+      message: `New tender "${tender.title}" matches your profile. Estimated value: ���${tender.estimatedValue.toLocaleString()}`
     }))
 
     await prisma.notification.createMany({

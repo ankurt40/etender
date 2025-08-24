@@ -44,30 +44,6 @@ const theme = createTheme({
     fontFamily: 'inherit', // Use the font from your Tailwind config
   },
   components: {
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          border: 'none',
-          '& .MuiDataGrid-columnHeaders': {
-            backgroundColor: '#f9fafb',
-            borderBottom: '2px solid #2563eb',
-            fontSize: '0.875rem',
-            fontWeight: 600,
-          },
-          '& .MuiDataGrid-cell': {
-            borderBottom: '1px solid #e5e7eb',
-            fontSize: '0.875rem',
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: '#f3f4f6',
-          },
-          '& .MuiDataGrid-footerContainer': {
-            borderTop: '2px solid #d1d5db',
-            backgroundColor: '#f9fafb',
-          },
-        },
-      },
-    },
     MuiButton: {
       styleOverrides: {
         root: {

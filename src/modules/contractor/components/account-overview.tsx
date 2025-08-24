@@ -1,9 +1,9 @@
 'use client'
 
-import { User, Building2, Mail, Phone, MapPin, Globe, Calendar, Users } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Globe } from 'lucide-react'
 
 interface AccountOverviewProps {
-  profile: any
+  profile: Record<string, unknown>
 }
 
 export function AccountOverview({ profile }: AccountOverviewProps) {
@@ -18,9 +18,9 @@ export function AccountOverview({ profile }: AccountOverviewProps) {
         </div>
         <div className="ml-4">
           <h4 className="text-lg font-medium text-gray-900">
-            {profile.firstName} {profile.lastName}
+            {profile.firstName as string} {profile.lastName as string}
           </h4>
-          <p className="text-sm text-gray-600">{profile.companyName || 'Company not specified'}</p>
+          <p className="text-sm text-gray-600">{(profile.companyName as string) || 'Company not specified'}</p>
         </div>
       </div>
 
@@ -28,28 +28,28 @@ export function AccountOverview({ profile }: AccountOverviewProps) {
       <div className="space-y-4 mb-6">
         <div className="flex items-center text-sm">
           <Mail className="h-4 w-4 text-gray-400 mr-3" />
-          <span className="text-gray-600">{profile.email}</span>
+          <span className="text-gray-600">{profile.email as string}</span>
         </div>
 
-        {profile.phone && (
+        {Boolean(profile.phone) && (
           <div className="flex items-center text-sm">
             <Phone className="h-4 w-4 text-gray-400 mr-3" />
-            <span className="text-gray-600">{profile.phone}</span>
+            <span className="text-gray-600">{profile.phone as string}</span>
           </div>
         )}
 
-        {profile.address && (
+        {Boolean(profile.address) && (
           <div className="flex items-center text-sm">
             <MapPin className="h-4 w-4 text-gray-400 mr-3" />
-            <span className="text-gray-600">{profile.city}, {profile.state}</span>
+            <span className="text-gray-600">{profile.city as string}, {profile.state as string}</span>
           </div>
         )}
 
-        {profile.website && (
+        {Boolean(profile.website) && (
           <div className="flex items-center text-sm">
             <Globe className="h-4 w-4 text-gray-400 mr-3" />
-            <a href={profile.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
-              {profile.website}
+            <a href={profile.website as string} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+              {profile.website as string}
             </a>
           </div>
         )}
@@ -62,27 +62,27 @@ export function AccountOverview({ profile }: AccountOverviewProps) {
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
             <span className="text-gray-600">Business Type:</span>
-            <span className="text-gray-900">{profile.businessType?.replace('_', ' ') || 'Not specified'}</span>
+            <span className="text-gray-900">{(profile.businessType as string)?.replace('_', ' ') || 'Not specified'}</span>
           </div>
 
-          {profile.yearEstablished && (
+          {Boolean(profile.yearEstablished) && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Established:</span>
-              <span className="text-gray-900">{profile.yearEstablished}</span>
+              <span className="text-gray-900">{profile.yearEstablished as string}</span>
             </div>
           )}
 
-          {profile.employeeCount && (
+          {Boolean(profile.employeeCount) && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">Employees:</span>
-              <span className="text-gray-900">{profile.employeeCount}</span>
+              <span className="text-gray-900">{profile.employeeCount as string}</span>
             </div>
           )}
 
-          {profile.gstNumber && (
+          {Boolean(profile.gstNumber) && (
             <div className="flex justify-between text-sm">
               <span className="text-gray-600">GST Number:</span>
-              <span className="text-gray-900 font-mono text-xs">{profile.gstNumber}</span>
+              <span className="text-gray-900 font-mono text-xs">{profile.gstNumber as string}</span>
             </div>
           )}
         </div>

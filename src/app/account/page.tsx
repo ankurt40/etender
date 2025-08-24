@@ -9,13 +9,13 @@ import { ProfileEditor } from '@/modules/contractor/components/profile-editor'
 export default async function ManageAccountPage() {
   const session = await getServerSession(authOptions)
 
-  if (!session) {
+  if (!session || !session.user) {
     redirect('/auth/signin')
   }
 
   // Mock contractor profile data - in real app, fetch from database
   const contractorProfile = {
-    id: session.user.id,
+    id: session.user.email || 'unknown',
     email: session.user.email,
     firstName: session.user.name?.split(' ')[0] || '',
     lastName: session.user.name?.split(' ')[1] || '',
@@ -23,7 +23,7 @@ export default async function ManageAccountPage() {
     avatar: null,
 
     // Company Information
-    companyName: session.user.contractor?.companyName || '',
+    companyName: '',
     businessType: 'PRIVATE_LIMITED',
     gstNumber: '',
     panNumber: '',
@@ -47,7 +47,7 @@ export default async function ManageAccountPage() {
 
     // Verification Status
     isEmpanelled: false,
-    isVerified: session.user.isVerified,
+    isVerified: false,
     verificationDocuments: []
   }
 

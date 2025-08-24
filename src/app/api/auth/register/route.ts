@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Remove password from response
-    const { password, ...userWithoutPassword } = result.user
+    const { password: _, ...userWithoutPassword } = result.user
 
     return NextResponse.json({
       success: true,
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { success: false, error: 'Validation error', details: error.errors },
+        { success: false, error: 'Validation error', details: error.issues },
         { status: 400 }
       )
     }

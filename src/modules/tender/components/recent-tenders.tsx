@@ -2,6 +2,7 @@
 
 import { Calendar, MapPin, DollarSign } from 'lucide-react'
 import { formatCurrency, formatDate, calculateDaysRemaining } from '@/lib/utils'
+import Link from 'next/link'
 
 interface RecentTendersProps {
   tenders: Array<{
@@ -69,9 +70,9 @@ export function RecentTenders({ tenders }: RecentTendersProps) {
                   </div>
 
                   <div className="flex justify-end mt-4 space-x-3">
-                    <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                    <Link href={`/tenders/${tender.id}`} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
                       View Details
-                    </button>
+                    </Link>
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700">
                       Apply Now
                     </button>
@@ -83,9 +84,9 @@ export function RecentTenders({ tenders }: RecentTendersProps) {
         )}
 
         <div className="mt-6 text-center">
-          <a href="/tenders" className="text-blue-600 hover:text-blue-800 font-medium">
+          <Link href="/tenders" className="text-blue-600 hover:text-blue-800 font-medium">
             View All Tenders →
-          </a>
+          </Link>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { User, Building2, MapPin, FileText, Save, Edit } from 'lucide-react'
 
 interface ProfileEditorProps {
-  profile: any
+  profile: Record<string, unknown>
 }
 
 export function ProfileEditor({ profile }: ProfileEditorProps) {
@@ -15,7 +15,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData((prev: any) => ({ ...prev, [name]: value }))
+    setFormData((prev: Record<string, unknown>) => ({ ...prev, [name]: value }))
   }
 
   const handleSave = async () => {
@@ -95,7 +95,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="firstName"
-                  value={formData.firstName}
+                  value={formData.firstName as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -109,7 +109,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="lastName"
-                  value={formData.lastName}
+                  value={formData.lastName as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -123,7 +123,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="email"
                   name="email"
-                  value={formData.email}
+                  value={formData.email as string || ''}
                   disabled={true}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 cursor-not-allowed"
                 />
@@ -137,7 +137,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="tel"
                   name="phone"
-                  value={formData.phone}
+                  value={formData.phone as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -158,7 +158,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="companyName"
-                  value={formData.companyName}
+                  value={formData.companyName as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -171,7 +171,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 </label>
                 <select
                   name="businessType"
-                  value={formData.businessType}
+                  value={formData.businessType as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -192,7 +192,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="number"
                   name="yearEstablished"
-                  value={formData.yearEstablished || ''}
+                  value={formData.yearEstablished as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   min="1900"
@@ -208,7 +208,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="gstNumber"
-                  value={formData.gstNumber}
+                  value={formData.gstNumber as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   placeholder="22AAAAA0000A1Z5"
@@ -223,7 +223,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="panNumber"
-                  value={formData.panNumber}
+                  value={formData.panNumber as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   placeholder="AAAAA0000A"
@@ -237,7 +237,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 </label>
                 <select
                   name="employeeCount"
-                  value={formData.employeeCount || ''}
+                  value={formData.employeeCount as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -258,7 +258,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="url"
                   name="website"
-                  value={formData.website}
+                  value={formData.website as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   placeholder="https://company.com"
@@ -273,7 +273,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="registrationNumber"
-                  value={formData.registrationNumber}
+                  value={formData.registrationNumber as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -293,7 +293,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 </label>
                 <textarea
                   name="address"
-                  value={formData.address}
+                  value={formData.address as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   rows={3}
@@ -308,7 +308,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="city"
-                  value={formData.city}
+                  value={formData.city as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -321,7 +321,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 </label>
                 <select
                   name="state"
-                  value={formData.state}
+                  value={formData.state as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"
@@ -366,7 +366,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
                 <input
                   type="text"
                   name="pincode"
-                  value={formData.pincode}
+                  value={formData.pincode as string || ''}
                   onChange={handleInputChange}
                   disabled={!isEditing}
                   pattern="[0-9]{6}"
@@ -386,7 +386,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
               </label>
               <textarea
                 name="description"
-                value={formData.description}
+                value={formData.description as string || ''}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 rows={4}
@@ -402,7 +402,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
               <input
                 type="number"
                 name="experience"
-                value={formData.experience}
+                value={formData.experience as string || ''}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 min="0"
@@ -417,7 +417,7 @@ export function ProfileEditor({ profile }: ProfileEditorProps) {
               </label>
               <select
                 name="turnover"
-                value={formData.turnover || ''}
+                value={formData.turnover as string || ''}
                 onChange={handleInputChange}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-50"

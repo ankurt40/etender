@@ -3,7 +3,7 @@
 import { CheckCircle, AlertCircle } from 'lucide-react'
 
 interface ProfileCompletionBarProps {
-  profile: any
+  profile: Record<string, unknown>
 }
 
 export function ProfileCompletionBar({ profile }: ProfileCompletionBarProps) {

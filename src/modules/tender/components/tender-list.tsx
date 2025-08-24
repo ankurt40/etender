@@ -26,7 +26,7 @@ interface Tender {
   contactEmail: string
   contactPhone: string
   status: string
-  applications: any[]
+  applications: Array<Record<string, unknown>>
   _count: { applications: number }
 }
 

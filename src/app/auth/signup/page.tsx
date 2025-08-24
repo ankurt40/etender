@@ -72,7 +72,7 @@ export default function SignUpPage() {
       } else {
         setError(data.error || 'Registration failed')
       }
-    } catch (error) {
+    } catch (_error) {
       setError('Registration failed. Please try again.')
     } finally {
       setIsLoading(false)

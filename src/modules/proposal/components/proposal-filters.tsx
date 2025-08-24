@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Filter, Calendar, TrendingUp } from 'lucide-react'
+import { Search, Calendar, TrendingUp } from 'lucide-react'
 
 export function ProposalFilters() {
   const [filters, setFilters] = useState({
