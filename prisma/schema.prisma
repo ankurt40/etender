@@ -1,0 +1,476 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  role          UserRole  @default(CONTRACTOR)
+  isActive      Boolean   @default(true)
+  isVerified    Boolean   @default(false)
+  avatar        String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+
+  // Relations
+  contractor    Contractor?
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  proposals     Proposal[]
+  contracts     Contract[]
+
+  @@map("users")
+}
+
+// Contractor Profile
+model Contractor {
+  id                String              @id @default(cuid())
+  userId            String              @unique
+  companyName       String
+  gstNumber         String?             @unique
+  panNumber         String?             @unique
+  registrationNumber String?            @unique
+  address           String
+  city              String
+  state             String
+  pincode           String
+  website           String?
+  description       String?
+  businessType      BusinessType
+  yearEstablished   Int?
+  employeeCount     Int?
+  turnover          Float?
+  isEmpanelled      Boolean             @default(false)
+  empanelmentDate   DateTime?
+  creditRating      String?
+  dscCertificate    String?             // Digital Signature Certificate
+
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents         ContractorDocument[]
+  tenderApplications TenderApplication[]
+  proposals         Proposal[]
+  contracts         Contract[]
+
+  @@map("contractors")
+}
+
+// Contractor Documents
+model ContractorDocument {
+  id           String     @id @default(cuid())
+  contractorId String
+  type         DocumentType
+  fileName     String
+  filePath     String
+  fileSize     Int
+  mimeType     String
+  isVerified   Boolean    @default(false)
+  verifiedAt   DateTime?
+  verifiedBy   String?
+  expiryDate   DateTime?
+  uploadedAt   DateTime   @default(now())
+
+  contractor   Contractor @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+
+  @@map("contractor_documents")
+}
+
+// Tender Management
+model Tender {
+  id                String              @id @default(cuid())
+  tenderNumber      String              @unique
+  title             String
+  description       String
+  department        String
+  category          TenderCategory
+  serviceType       String
+  estimatedValue    Float
+  earnestMoney      Float?
+  tenderFee         Float?
+  location          String
+  state             String
+  district          String?
+  publishedDate     DateTime
+  lastDateSubmission DateTime
+  openingDate       DateTime
+  validityPeriod    Int                 // in days
+  workCompletionTime Int                // in days
+  eligibilityCriteria Json
+  technicalSpecs    Json
+  evaluationCriteria Json
+  contactPerson     String
+  contactEmail      String
+  contactPhone      String
+  tenderDocument    String?             // PDF/DOC link
+  status            TenderStatus        @default(ACTIVE)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  // Relations
+  applications      TenderApplication[]
+  proposals         Proposal[]
+  notifications     Notification[]
+  analytics         TenderAnalytics[]
+
+  @@map("tenders")
+}
+
+// Tender Applications by Contractors
+model TenderApplication {
+  id           String                    @id @default(cuid())
+  tenderId     String
+  contractorId String
+  applicationNumber String               @unique
+  appliedAt    DateTime                  @default(now())
+  status       TenderApplicationStatus   @default(APPLIED)
+
+  tender       Tender                    @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  contractor   Contractor                @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+
+  @@unique([tenderId, contractorId])
+  @@map("tender_applications")
+}
+
+// Proposal Management
+model Proposal {
+  id                String           @id @default(cuid())
+  tenderId          String
+  contractorId      String
+  userId            String
+  proposalNumber    String           @unique
+  title             String
+  technicalProposal Json
+  financialProposal Json
+  complianceMatrix  Json
+  totalAmount       Float
+  aiConfidenceScore Float?           // AI bid/no-bid confidence
+  aiRecommendations Json?
+  draftContent      String?          // AI-generated draft
+  language          Language         @default(ENGLISH)
+  status            ProposalStatus   @default(DRAFT)
+  submittedAt       DateTime?
+  lastModifiedAt    DateTime         @updatedAt
+  createdAt         DateTime         @default(now())
+
+  tender            Tender           @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+  contractor        Contractor       @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  user              User             @relation(fields: [userId], references: [id])
+  documents         ProposalDocument[]
+  digitalSignature  DigitalSignature?
+
+  @@map("proposals")
+}
+
+// Proposal Documents
+model ProposalDocument {
+  id         String   @id @default(cuid())
+  proposalId String
+  fileName   String
+  filePath   String
+  fileSize   Int
+  mimeType   String
+  uploadedAt DateTime @default(now())
+
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@map("proposal_documents")
+}
+
+// Digital Signature for Proposals
+model DigitalSignature {
+  id           String    @id @default(cuid())
+  proposalId   String    @unique
+  certificate  String    // DSC certificate data
+  signature    String    // Digital signature
+  timestamp    DateTime  @default(now())
+  isValid      Boolean   @default(true)
+
+  proposal     Proposal  @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+
+  @@map("digital_signatures")
+}
+
+// Contract Management
+model Contract {
+  id                String             @id @default(cuid())
+  tenderId          String?
+  contractorId      String
+  userId            String
+  contractNumber    String             @unique
+  title             String
+  description       String
+  contractValue     Float
+  startDate         DateTime
+  endDate           DateTime
+  deliverables      Json
+  milestones        Json
+  paymentTerms      Json
+  penaltyClause     Json?
+  complianceTerms   Json
+  status            ContractStatus     @default(ACTIVE)
+  documentPath      String?            // Original contract document
+  extractedMetadata Json?              // NLP extracted data
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  contractor        Contractor         @relation(fields: [contractorId], references: [id], onDelete: Cascade)
+  user              User               @relation(fields: [userId], references: [id])
+  deliverableTracking DeliverableTracking[]
+  invoices          Invoice[]
+  reminders         Reminder[]
+
+  @@map("contracts")
+}
+
+// Deliverable Tracking
+model DeliverableTracking {
+  id               String               @id @default(cuid())
+  contractId       String
+  deliverableName  String
+  description      String
+  dueDate          DateTime
+  completedDate    DateTime?
+  status           DeliverableStatus    @default(PENDING)
+  notes            String?
+  attachments      Json?
+
+  contract         Contract             @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("deliverable_tracking")
+}
+
+// Invoice Management (Tally ERP Integration)
+model Invoice {
+  id               String        @id @default(cuid())
+  contractId       String
+  invoiceNumber    String        @unique
+  amount           Float
+  taxAmount        Float
+  totalAmount      Float
+  dueDate          DateTime
+  paidDate         DateTime?
+  status           InvoiceStatus @default(PENDING)
+  tallyReference   String?       // Tally ERP reference
+  createdAt        DateTime      @default(now())
+
+  contract         Contract      @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
+
+// Reminders and Notifications
+model Reminder {
+  id          String        @id @default(cuid())
+  contractId  String?
+  userId      String?
+  type        ReminderType
+  title       String
+  description String
+  dueDate     DateTime
+  isCompleted Boolean       @default(false)
+  createdAt   DateTime      @default(now())
+
+  contract    Contract?     @relation(fields: [contractId], references: [id], onDelete: Cascade)
+
+  @@map("reminders")
+}
+
+// Notification System
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  tenderId  String?
+  type      NotificationType
+  title     String
+  message   String
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tender    Tender?          @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// Tender Analytics
+model TenderAnalytics {
+  id               String   @id @default(cuid())
+  tenderId         String
+  totalApplications Int     @default(0)
+  averageBidAmount Float?
+  winningBidAmount Float?
+  competitorAnalysis Json?
+  priceAnalysis    Json?
+  winThemes        Json?
+  calculatedAt     DateTime @default(now())
+
+  tender           Tender   @relation(fields: [tenderId], references: [id], onDelete: Cascade)
+
+  @@map("tender_analytics")
+}
+
+// Content Library for Proposals
+model ContentLibrary {
+  id          String        @id @default(cuid())
+  title       String
+  content     String
+  type        ContentType
+  category    String
+  language    Language      @default(ENGLISH)
+  tags        String[]
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("content_library")
+}
+
+// Audit Logs
+model AuditLog {
+  id          String   @id @default(cuid())
+  userId      String
+  action      String
+  resource    String
+  resourceId  String?
+  details     Json?
+  ipAddress   String?
+  userAgent   String?
+  timestamp   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("audit_logs")
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  MANAGER
+  CONTRACTOR
+  STAFF
+}
+
+enum BusinessType {
+  SOLE_PROPRIETORSHIP
+  PARTNERSHIP
+  PRIVATE_LIMITED
+  PUBLIC_LIMITED
+  LLP
+  OPC
+}
+
+enum DocumentType {
+  PAN_CARD
+  GST_CERTIFICATE
+  REGISTRATION_CERTIFICATE
+  BANK_STATEMENT
+  FINANCIAL_STATEMENT
+  EXPERIENCE_CERTIFICATE
+  TECHNICAL_CERTIFICATE
+  DSC_CERTIFICATE
+  OTHER
+}
+
+enum TenderCategory {
+  CONSTRUCTION
+  CONSULTING
+  SUPPLY
+  SERVICES
+  MAINTENANCE
+  IT_SOFTWARE
+  HEALTHCARE
+  EDUCATION
+  TRANSPORTATION
+  OTHER
+}
+
+enum TenderStatus {
+  DRAFT
+  ACTIVE
+  CLOSED
+  CANCELLED
+  AWARDED
+}
+
+enum TenderApplicationStatus {
+  APPLIED
+  UNDER_REVIEW
+  SHORTLISTED
+  REJECTED
+  AWARDED
+}
+
+enum ProposalStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+}
+
+enum ContractStatus {
+  DRAFT
+  ACTIVE
+  COMPLETED
+  TERMINATED
+  EXPIRED
+}
+
+enum DeliverableStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  OVERDUE
+  CANCELLED
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum ReminderType {
+  DELIVERABLE
+  PAYMENT
+  COMPLIANCE
+  RENEWAL
+  MEETING
+  OTHER
+}
+
+enum NotificationType {
+  TENDER_MATCH
+  PROPOSAL_UPDATE
+  CONTRACT_REMINDER
+  SYSTEM_ALERT
+  MESSAGE
+}
+
+enum ContentType {
+  TEMPLATE
+  CAPABILITY_STATEMENT
+  TECHNICAL_SPEC
+  COMPLIANCE_MATRIX
+  PAST_PROPOSAL
+}
+
+enum Language {
+  ENGLISH
+  HINDI
+}

@@ -1,0 +1,116 @@
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth/config'
+import { redirect } from 'next/navigation'
+import { DashboardHeader } from '@/components/common/dashboard-header'
+import { ProposalFilters } from '@/modules/proposal/components/proposal-filters'
+import { ProposalList } from '@/modules/proposal/components/proposal-list'
+
+export default async function ProposalsPage() {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    redirect('/auth/signin')
+  }
+
+  // Mock data for proposals
+  const proposals = [
+    {
+      id: '1',
+      proposalNumber: 'PROP-2025-ABC123',
+      title: 'Highway Bridge Construction Proposal',
+      status: 'SUBMITTED',
+      totalAmount: 14500000,
+      aiConfidenceScore: 85,
+      submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      lastModifiedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      language: 'ENGLISH',
+      tender: {
+        id: '1',
+        title: 'Construction of Highway Bridge - Phase 2',
+        estimatedValue: 15000000,
+        department: 'Ministry of Road Transport and Highways',
+        lastDateSubmission: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+      },
+      contractor: {
+        id: 'demo-contractor',
+        companyName: 'Demo Construction Ltd'
+      }
+    },
+    {
+      id: '2',
+      proposalNumber: 'PROP-2025-DEF456',
+      title: 'IT Infrastructure Modernization Proposal',
+      status: 'DRAFT',
+      totalAmount: 8200000,
+      aiConfidenceScore: 72,
+      submittedAt: null,
+      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      lastModifiedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      language: 'ENGLISH',
+      tender: {
+        id: '2',
+        title: 'IT Infrastructure Modernization for Government Offices',
+        estimatedValue: 8500000,
+        department: 'Department of Electronics & IT',
+        lastDateSubmission: new Date(Date.now() + 12 * 24 * 60 * 60 * 1000)
+      },
+      contractor: {
+        id: 'demo-contractor',
+        companyName: 'Demo Construction Ltd'
+      }
+    },
+    {
+      id: '3',
+      proposalNumber: 'PROP-2025-GHI789',
+      title: 'Medical Equipment Supply Proposal',
+      status: 'UNDER_REVIEW',
+      totalAmount: 5100000,
+      aiConfidenceScore: 90,
+      submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000),
+      lastModifiedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+      language: 'ENGLISH',
+      tender: {
+        id: '3',
+        title: 'Supply of Medical Equipment to District Hospitals',
+        estimatedValue: 5200000,
+        department: 'Ministry of Health and Family Welfare',
+        lastDateSubmission: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+      },
+      contractor: {
+        id: 'demo-contractor',
+        companyName: 'Demo Construction Ltd'
+      }
+    }
+  ]
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <DashboardHeader user={session.user} />
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">My Proposals</h1>
+              <p className="text-gray-600 mt-2">
+                Manage your tender proposals and track their status
+              </p>
+            </div>
+            <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+              Create New Proposal
+            </button>
+          </div>
+        </div>
+
+        {/* Filters */}
+        <ProposalFilters />
+
+        {/* Proposal List */}
+        <ProposalList proposals={proposals} />
+      </main>
+    </div>
+  )
+}
